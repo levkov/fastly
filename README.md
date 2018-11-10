@@ -40,11 +40,8 @@ Open your Logstash configuration file and add AWS S3 input and Coralogix output.
 
 ```javascript
 input {
-  s3 {
-    "access_key_id" => "XXXXXXX"
-    "secret_access_key" => "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-    "bucket" => "XXXXXXXXXXX"
-    "region" => "us-east-1"
+  syslog {
+    port => 5140
   }
 }
 
