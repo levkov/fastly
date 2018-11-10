@@ -47,29 +47,10 @@ input {
 
 filter {
 
-    grok {
-        match => ["message", "%{YEAR:year}-%{MONTHNUM:month}-%{MONTHDAY:day}[ \t]%{TIME:time}[ \t]%{DATA:x_edge_location}[ \t](?:%{NUMBER:sc_bytes}|-)[ \t]%{IP:c_ip}[ \t]%{WORD:cs_method}[ \t]%{HOSTNAME:cs_host}[ \t]%{NOTSPACE:cs_uri_stem}[ \t]%{NUMBER:sc_status}[ \t]%{GREEDYDATA:referrer}[ \t]%{NOTSPACE:user_agent}[ \t]%{GREEDYDATA:cs_uri_query}[ \t]%{NOTSPACE:cookie}[ \t]%{WORD:x_edge_result_type}[ \t]%{NOTSPACE:x_edge_request_id}[ \t]%{HOSTNAME:x_host_header}[ \t]%{URIPROTO:cs_protocol}[ \t]%{INT:cs_bytes}[ \t]%{NUMBER:time_taken}[ \t]%{NOTSPACE:x_forwarded_for}[ \t]%{NOTSPACE:ssl_protocol}[ \t]%{NOTSPACE:ssl_cipher}[ \t]%{NOTSPACE:x_edge_response_result_type}([ \t])?(%{NOTSPACE:cs_protocol_version})?"]
-    }
-
-    geoip {
-        source => "c_ip"
-    }
-    mutate {
-        add_field => ["listener_timestamp", "%{year}-%{month}-%{day} %{time}"]
-        convert => {
-                "[geoip][coordinates]" => "float"
-                "sc_bytes" => "integer"
-                "cs_bytes" => "integer"
-                "time_taken" => "float"
-        }
-    }
-
-    date {
-        match => ["listener_timestamp", "yyyy-MM-dd HH:mm:ss"]
-    }
-
+   grok {
+     match => { "message" => "%{IP:clientip} %{GREEDYDATA:none} \[%{NOTSPACE:date} %{INT}] %{GREEDYDATA:api1} %{GREEDYDATA:api2} %   {GREEDYDATA:api3} %{NOTSPACE:response}[ \t]" }
+  }
 }
-
 
 output {
     coralogix_logger { 
